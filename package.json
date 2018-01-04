@@ -1,6 +1,12 @@
 {
   "name": "unlicht-rpg-app",
-  "version": "0.0.1-2",
+  "version": "0.1.1-dev.5",
+  "description": "A collection of tools for DMs and Table Top RPG Enthusiasts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KaiserGald/rpg-toolkit"
+  },
+  "homepage": "https://www.scottisenberg.com",
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-bump": "^0.8.0"

@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   //load npm tasks
   grunt.loadNpmTasks('grunt-bump');
 
-  // grunt-bump
+  // grunt-bump config
   grunt.initConfig({
     bump: {
       options: {
@@ -18,7 +18,7 @@ module.exports = function(grunt) {
         pushTo :'origin',
         gotDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
         globalReplace: false,
-        prereleaseName: false,
+        prereleaseName: 'dev',
         metadata: '',
         regExp: false
       }
