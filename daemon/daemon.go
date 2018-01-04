@@ -13,6 +13,8 @@ import (
 // Config contains configuration information for the server
 type Config struct {
 	ListenSpec string
+	DevMode    bool
+	Verbose    bool
 }
 
 // Run starts up the server daemon
