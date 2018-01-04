@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/KaiserGald/rpgApp/services/apiserver"
 	"github.com/KaiserGald/rpgApp/services/logger"
 	"github.com/KaiserGald/rpgApp/ui"
 )
@@ -27,6 +28,12 @@ func Run(cfg *Config, log *logger.Logger) error {
 	}
 
 	ui.Start(l, log)
+	apiserver.Start(log)
+	com := apiserver.GetCommand()
+	if com == "stop" {
+		log.Notice.Log("Stop command received, shutting down...\n")
+		os.Exit(0)
+	}
 
 	waitForSignal(log)
 
