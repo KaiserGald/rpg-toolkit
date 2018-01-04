@@ -14,16 +14,15 @@ import (
 type Config struct {
 	ListenSpec string
 	DevMode    bool
-	Verbose    bool
 }
 
 // Run starts up the server daemon
 func Run(cfg *Config, log *logger.Logger) error {
 
-	log.Info.Printf("Starting HTTP on %s\n", cfg.ListenSpec)
+	log.Info.Log("Starting HTTP on %s\n", cfg.ListenSpec)
 	l, err := net.Listen("tcp", cfg.ListenSpec)
 	if err != nil {
-		log.Error.Printf("Error creating listener: %v\n", err)
+		log.Error.Log("Error creating listener: %v\n", err)
 		return err
 	}
 
@@ -39,5 +38,5 @@ func waitForSignal(log *logger.Logger) {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	s := <-ch
 
-	log.Info.Printf("Got signal: %v, exiting.", s)
+	log.Info.Log("Got signal: %v, exiting.", s)
 }

@@ -11,7 +11,7 @@ import (
 // Start initializes and starts the ui router
 func Start(listener net.Listener, log *logger.Logger) {
 
-	log.Info.Printf("Starting front-end.\n")
+	log.Info.Log("Starting front-end.\n")
 
 	server := &http.Server{
 		ReadTimeout:    60 * time.Second,
@@ -21,5 +21,5 @@ func Start(listener net.Listener, log *logger.Logger) {
 
 	go server.Serve(listener)
 
-	log.Info.Printf("Server up and running.\n")
+	log.Info.Log("Server up and running.\n")
 }
