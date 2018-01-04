@@ -14,7 +14,7 @@ var log *logger.Logger
 
 func init() {
 	conns = make([]net.Conn, 0, 10)
-	coms = make(chan string)
+	coms = make(chan string, 5)
 }
 
 // Start starts the API Server
@@ -34,8 +34,10 @@ func Start(lg *logger.Logger) error {
 
 // runServer listes and accepts incoming connections, and then handles them
 func runServer(l net.Listener) {
+	var conn net.Conn
+	var err error
 	for {
-		conn, err := l.Accept()
+		conn, err = l.Accept()
 		if err != nil {
 			log.Error.Log("Error accepting connection: %v\n", err)
 		}
@@ -50,14 +52,14 @@ func handleConnection(c net.Conn, id int) error {
 	for {
 
 		defer func() {
-			log.Info.Log("Closing connection #%d\n", id)
+			log.Debug.Log("Closing connection #%d\n", id)
 			c.Close()
 			conns[id] = nil
 		}()
 
 		message, err := bufio.NewReader(c).ReadString('\n')
 		if err != nil {
-			log.Error.Log("Error in creating Reader: %v\n")
+			log.Debug.Log("Connection to client lost\n")
 			return err
 		}
 

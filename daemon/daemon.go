@@ -11,6 +11,8 @@ import (
 	"github.com/KaiserGald/rpgApp/ui"
 )
 
+var log *logger.Logger
+
 // Config contains configuration information for the server
 type Config struct {
 	ListenSpec string
@@ -18,7 +20,8 @@ type Config struct {
 }
 
 // Run starts up the server daemon
-func Run(cfg *Config, log *logger.Logger) error {
+func Run(cfg *Config, lg *logger.Logger) error {
+	log = lg
 
 	log.Info.Log("Starting HTTP on %s\n", cfg.ListenSpec)
 	l, err := net.Listen("tcp", cfg.ListenSpec)
@@ -29,21 +32,28 @@ func Run(cfg *Config, log *logger.Logger) error {
 
 	ui.Start(l, log)
 	apiserver.Start(log)
-	com := apiserver.GetCommand()
-	if com == "stop" {
-		log.Notice.Log("Stop command received, shutting down...\n")
-		os.Exit(0)
-	}
-
-	waitForSignal(log)
+	go handleCommands()
+	waitForSignal()
 
 	return nil
 }
 
-func waitForSignal(log *logger.Logger) {
+func waitForSignal() {
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	s := <-ch
 
 	log.Info.Log("Got signal: %v, exiting.", s)
+}
+
+func handleCommands() {
+	var com string
+	for {
+		com = apiserver.GetCommand()
+		switch com {
+		case "stop":
+			log.Notice.Log("Stop command received, shutting down server...")
+			os.Exit(0)
+		}
+	}
 }
