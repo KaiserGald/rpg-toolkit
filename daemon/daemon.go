@@ -5,8 +5,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	"github.com/KaiserGald/rpgApp/services/api/server"
+	"github.com/KaiserGald/rpgApp/services/com/comhandler"
+	"github.com/KaiserGald/rpgApp/services/com/comserver"
 	"github.com/KaiserGald/rpgApp/services/logger"
 	"github.com/KaiserGald/rpgApp/ui"
 )
@@ -31,8 +33,9 @@ func Run(cfg *Config, lg *logger.Logger) error {
 	}
 
 	ui.Start(l, log)
-	apiserver.Start(log)
-	go handleCommands()
+	comserver.Start(log)
+	comhandler.Start(log)
+
 	waitForSignal()
 
 	return nil
@@ -43,17 +46,6 @@ func waitForSignal() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	s := <-ch
 
-	log.Info.Log("Got signal: %v, exiting.", s)
-}
-
-func handleCommands() {
-	var com string
-	for {
-		com = apiserver.GetCommand()
-		switch com {
-		case "stop":
-			log.Notice.Log("Stop command received, shutting down server...")
-			os.Exit(0)
-		}
-	}
+	log.Debug.Log("Got signal: %v, exiting.", s)
+	time.Sleep(2 * time.Second)
 }

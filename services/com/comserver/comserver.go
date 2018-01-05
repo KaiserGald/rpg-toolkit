@@ -1,4 +1,4 @@
-package apiserver
+package comserver
 
 import (
 	"bufio"
@@ -9,16 +9,22 @@ import (
 )
 
 var conns []*net.TCPConn
-var coms chan string
+var comch chan Command
 var log *logger.Logger
 var service string
 
 func init() {
 	conns = make([]*net.TCPConn, 0, 10)
-	coms = make(chan string, 5)
+	comch = make(chan Command, 5)
 }
 
-// Start starts the API Server
+// Command contains a command in the form of a string and a pointer to net.TCPConn
+type Command struct {
+	Command string
+	Conn    *net.TCPConn
+}
+
+// Start starts the Command Server
 func Start(lg *logger.Logger) error {
 	log = lg
 	service = ":8081"
@@ -73,23 +79,24 @@ func handleConnection(c *net.TCPConn, id int) error {
 			return err
 		}
 
-		com := string(message)
-		com = strings.Trim(com, "\n")
-		log.Debug.Log("Received message: %v\n", com)
+		m := string(message)
+		m = strings.Trim(m, "\n")
+		log.Debug.Log("Received message: %v\n", m)
 
-		coms <- com
+		com := Command{m, c}
+		comch <- com
 
 	}
 }
 
 // GetCommand returns the command sent by the client
-func GetCommand() string {
-	c := <-coms
+func GetCommand() (string, *net.TCPConn) {
+	c := <-comch
 
-	return c
+	return c.Command, c.Conn
 }
 
-// Respond responds to the client with a message
-func Respond(c *net.TCPConn, s string) {
-	c.Write([]byte(s))
+// Respond sends a response to the client
+func Respond(c *net.TCPConn, r string) {
+	c.Write([]byte(r))
 }
