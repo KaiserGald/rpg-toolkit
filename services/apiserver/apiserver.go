@@ -8,21 +8,28 @@ import (
 	"github.com/KaiserGald/rpgApp/services/logger"
 )
 
-var conns []net.Conn
+var conns []*net.TCPConn
 var coms chan string
 var log *logger.Logger
+var service string
 
 func init() {
-	conns = make([]net.Conn, 0, 10)
+	conns = make([]*net.TCPConn, 0, 10)
 	coms = make(chan string, 5)
 }
 
 // Start starts the API Server
 func Start(lg *logger.Logger) error {
 	log = lg
+	service = ":8081"
 	log.Info.Log("Launching API Server")
+	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
+	if err != nil {
+		log.Error.Log("Error in resolving TCP address: %v", err)
+		return err
+	}
 
-	l, err := net.Listen("tcp", ":8081")
+	l, err := net.ListenTCP("tcp", tcpAddr)
 	if err != nil {
 		log.Error.Log("Error creating listener: %v", err)
 		return err
@@ -33,33 +40,34 @@ func Start(lg *logger.Logger) error {
 }
 
 // runServer listes and accepts incoming connections, and then handles them
-func runServer(l net.Listener) {
-	var conn net.Conn
-	var err error
+func runServer(l *net.TCPListener) {
+	//var conn net.TCPConn
+	//var err error
 	for {
-		conn, err = l.Accept()
+		conn, err := l.AcceptTCP()
 		if err != nil {
 			log.Error.Log("Error accepting connection: %v\n", err)
+		} else {
+			conns = append(conns, conn)
+			go handleConnection(conn, len(conns)-1)
 		}
-
-		conns = append(conns, conn)
-		go handleConnection(conn, len(conns)-1)
 	}
 }
 
 // runServer listens and responds on the specified socket
-func handleConnection(c net.Conn, id int) error {
+func handleConnection(c *net.TCPConn, id int) error {
+
+	defer func() {
+		log.Debug.Log("Closing connection #%d.\n", id)
+		c.Close()
+		conns[id] = nil
+	}()
+
+	log.Info.Log("Connection %v established.", id)
 	for {
-
-		defer func() {
-			log.Debug.Log("Closing connection #%d\n", id)
-			c.Close()
-			conns[id] = nil
-		}()
-
 		message, err := bufio.NewReader(c).ReadString('\n')
 		if err != nil {
-			log.Debug.Log("Connection to client lost\n")
+			log.Info.Log("Connection to client %v lost.\n", id)
 			return err
 		}
 
