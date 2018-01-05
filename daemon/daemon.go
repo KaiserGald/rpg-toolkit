@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/KaiserGald/rpgApp/services/apiserver"
+	"github.com/KaiserGald/rpgApp/services/api/server"
 	"github.com/KaiserGald/rpgApp/services/logger"
 	"github.com/KaiserGald/rpgApp/ui"
 )

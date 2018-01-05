@@ -22,7 +22,9 @@ func init() {
 func Start(lg *logger.Logger) error {
 	log = lg
 	service = ":8081"
+
 	log.Info.Log("Launching API Server")
+
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
 	if err != nil {
 		log.Error.Log("Error in resolving TCP address: %v", err)
@@ -76,6 +78,7 @@ func handleConnection(c *net.TCPConn, id int) error {
 		log.Debug.Log("Received message: %v\n", com)
 
 		coms <- com
+
 	}
 }
 
@@ -84,4 +87,9 @@ func GetCommand() string {
 	c := <-coms
 
 	return c
+}
+
+// Respond responds to the client with a message
+func Respond(c *net.TCPConn, s string) {
+	c.Write([]byte(s))
 }
