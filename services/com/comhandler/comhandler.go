@@ -37,11 +37,15 @@ func handle() {
 		switch com {
 		case stop:
 			log.Notice.Log("Stop command received, shutting server down...\n")
-			comserver.Respond(conn, "Stop command received, shutting server down...\n")
+			comserver.Respond(conn, "stop\n")
+
 			err := p.Signal(os.Interrupt)
 			if err != nil {
 				log.Error.Log("Error emitting interrupt signal: %v\n", err)
 			}
+		default:
+			log.Debug.Log("Unknown Command Received.\n")
+			comserver.Respond(conn, "unknown\n")
 		}
 	}
 }

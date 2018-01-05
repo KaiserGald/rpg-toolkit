@@ -21,5 +21,5 @@ func Start(listener net.Listener, log *logger.Logger) {
 
 	go server.Serve(listener)
 
-	log.Info.Log("Server up and running.\n")
+	log.Info.Log("Front-end up and running.\n")
 }

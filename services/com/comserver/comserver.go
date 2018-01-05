@@ -29,7 +29,7 @@ func Start(lg *logger.Logger) error {
 	log = lg
 	service = ":8081"
 
-	log.Info.Log("Launching API Server")
+	log.Info.Log("Launching Command Server")
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
 	if err != nil {
