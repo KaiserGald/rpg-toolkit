@@ -30,7 +30,7 @@ func Start(lg *logger.Logger) {
 	go handle()
 }
 
-// handle handles any command coming into the api
+// handle handles any command coming into the command server
 func handle() {
 	for {
 		com, conn := comserver.GetCommand()
