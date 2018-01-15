@@ -22,7 +22,7 @@ type Config struct {
 }
 
 // Run starts up the server daemon
-func Run(cfg *Config, lg *logger.Logger) error {
+func Run(cfg *Config, cp bool, lg *logger.Logger) error {
 	log = lg
 
 	log.Notice.Log("Starting HTTP on %s\n", cfg.ListenSpec)
@@ -33,7 +33,7 @@ func Run(cfg *Config, lg *logger.Logger) error {
 	}
 
 	ui.Start(l, log)
-	comserver.Start(log)
+	comserver.Start(cp, log)
 	comhandler.Start(log)
 
 	log.Notice.Log("Server up and running.\n")

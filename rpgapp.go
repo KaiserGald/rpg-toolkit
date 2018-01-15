@@ -13,6 +13,7 @@ var dev bool
 var port int
 var verbose bool
 var quiet bool
+var childProc bool
 var log *logger.Logger
 var logLevel int
 
@@ -38,6 +39,8 @@ func processFlags(cfg *daemon.Config) {
 
 	flag.BoolVar(&quiet, "quiet", false, "sets server log to Verbose mode")
 	flag.BoolVar(&quiet, "q", false, "sets server log to Verbose mode")
+
+	flag.BoolVar(&childProc, "g", false, "sets the server to graceful restart mode")
 
 	flag.Parse()
 
@@ -69,7 +72,7 @@ func main() {
 
 	log.Init(os.Stdout, os.Stdout, os.Stdout, os.Stderr, logLevel)
 
-	if err := daemon.Run(cfg, log); err != nil {
+	if err := daemon.Run(cfg, childProc, log); err != nil {
 		log.Error.Log("Error in main(): %v\n", err)
 	}
 }

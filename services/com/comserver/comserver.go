@@ -12,6 +12,8 @@ var conns []*net.TCPConn
 var comch chan Command
 var log *logger.Logger
 var service string
+var kill bool
+var childProcess bool
 
 func init() {
 	conns = make([]*net.TCPConn, 0, 10)
@@ -25,8 +27,9 @@ type Command struct {
 }
 
 // Start starts the Command Server
-func Start(lg *logger.Logger) error {
+func Start(cp bool, lg *logger.Logger) error {
 	log = lg
+	childProcess = cp
 	service = ":8081"
 
 	log.Info.Log("Launching Command Server")
@@ -48,16 +51,19 @@ func Start(lg *logger.Logger) error {
 }
 
 // runServer listes and accepts incoming connections, and then handles them
-func runServer(l *net.TCPListener) {
+func runServer(l *net.TCPListener) error {
 	//var conn net.TCPConn
 	//var err error
 	for {
 		conn, err := l.AcceptTCP()
 		if err != nil {
 			log.Error.Log("Error accepting connection: %v\n", err)
-		} else {
-			conns = append(conns, conn)
-			go handleConnection(conn, len(conns)-1)
+			return err
+		}
+		conns = append(conns, conn)
+		go handleConnection(conn, len(conns)-1)
+		if kill {
+			l.Close()
 		}
 	}
 }
@@ -85,7 +91,6 @@ func handleConnection(c *net.TCPConn, id int) error {
 
 		com := Command{m, c}
 		comch <- com
-
 	}
 }
 
@@ -99,4 +104,8 @@ func GetCommand() (string, *net.TCPConn) {
 // Respond sends a response to the client
 func Respond(c *net.TCPConn, r string) {
 	c.Write([]byte(r))
+}
+
+func Kill(b bool) {
+	kill = b
 }

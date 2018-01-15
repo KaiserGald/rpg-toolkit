@@ -9,7 +9,7 @@ User=dungeonmaster
 Group=dungeonmaster
 LimitNOFILE=1024
 
-Restart=on-failure
+Restart=on-success
 RestartSec=10
 startLimitIntercalSec=60
 
