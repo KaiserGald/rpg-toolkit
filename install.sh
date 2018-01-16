@@ -5,6 +5,9 @@ EXEC=/opt/rpgapp/rpgApp
 LOCALSERVICECONFIG=/lib/systemd/system/rpgapp.service
 SERVICECONFIG=data/systemd/rpgapp.service
 SERVER=rpgapp
+APPDIR=/opt/rpgapp/assets
+COMPDIR=/opt/rpgapp/assets/components
+STATICDIR=/opt/rpgapp/assets/static
 
 if (( $(ps -ef | grep -v grep | grep $SERVER | wc -l) > 0)); then
   echo "$SERVER server is running. Stopping it now."
@@ -25,6 +28,13 @@ else
   sudo rm -f $EXEC
   sudo cp rpgApp $DIRECTORY
 fi
+
+if [ ! -d "$APPDIR" ]; then
+  sudo mkdir $APPDIR
+fi
+
+sudo cp -ru ui/app/components $COMPDIR
+sudo cp -ru ui/app/static $STATICDIR
 
 if [ ! -f "$LOCALSERVICECONFIG" ]; then
   sudo rm -f $LOCALSERVICECONFIG

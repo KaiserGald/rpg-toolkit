@@ -43,7 +43,7 @@ func handle() {
 		case stop:
 			log.Notice.Log("Stop command received, shutting server down...\n")
 			comserver.Respond(conn, "stop\n")
-
+			shutdown = true
 			err := p.Signal(os.Interrupt)
 			if err != nil {
 				log.Error.Log("Error emitting interrupt signal: %v\n", err)
@@ -51,7 +51,7 @@ func handle() {
 		case restart:
 			log.Notice.Log("Restart command received, restarting server now...\n")
 			comserver.Respond(conn, "restart\n")
-			comserver.Kill(true)
+			comserver.Kill()
 			shutdown = true
 			time.Sleep(5 * time.Second)
 			err := p.Signal(os.Interrupt)

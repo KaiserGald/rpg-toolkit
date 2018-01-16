@@ -10,5 +10,8 @@
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-bump": "^0.8.0"
+  },
+  "dependencies": {
+    "vue": "^2.5.13"
   }
 }

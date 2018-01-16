@@ -13,7 +13,6 @@ var comch chan Command
 var log *logger.Logger
 var service string
 var kill bool
-var childProcess bool
 
 func init() {
 	conns = make([]*net.TCPConn, 0, 10)
@@ -27,9 +26,8 @@ type Command struct {
 }
 
 // Start starts the Command Server
-func Start(cp bool, lg *logger.Logger) error {
+func Start(lg *logger.Logger) error {
 	log = lg
-	childProcess = cp
 	service = ":8081"
 
 	log.Info.Log("Launching Command Server")
@@ -106,6 +104,7 @@ func Respond(c *net.TCPConn, r string) {
 	c.Write([]byte(r))
 }
 
-func Kill(b bool) {
-	kill = b
+// Kill stops the server
+func Kill() {
+	kill = true
 }

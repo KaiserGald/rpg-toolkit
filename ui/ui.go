@@ -1,3 +1,8 @@
+// Package ui
+// 16 January 2018
+// Code is licensed under the MIT License
+// © 2018 Scott Isenberg
+
 package ui
 
 import (
@@ -6,6 +11,7 @@ import (
 	"time"
 
 	"github.com/KaiserGald/rpgApp/services/logger"
+	"github.com/KaiserGald/rpgApp/ui/handler"
 )
 
 // Start initializes and starts the ui router
@@ -19,6 +25,7 @@ func Start(listener net.Listener, log *logger.Logger) {
 		MaxHeaderBytes: 1 << 16,
 	}
 
+	handler.Handle(log)
 	go server.Serve(listener)
 
 	log.Info.Log("Front-end up and running.\n")

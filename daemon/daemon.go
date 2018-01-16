@@ -1,3 +1,8 @@
+// Package daemon
+// 16 January 2018
+// Code is licensed under the MIT License
+// © 2018 Scott Isenberg
+
 package daemon
 
 import (
@@ -22,7 +27,7 @@ type Config struct {
 }
 
 // Run starts up the server daemon
-func Run(cfg *Config, cp bool, lg *logger.Logger) error {
+func Run(cfg *Config, lg *logger.Logger) error {
 	log = lg
 
 	log.Notice.Log("Starting HTTP on %s\n", cfg.ListenSpec)
@@ -33,7 +38,7 @@ func Run(cfg *Config, cp bool, lg *logger.Logger) error {
 	}
 
 	ui.Start(l, log)
-	comserver.Start(cp, log)
+	comserver.Start(log)
 	comhandler.Start(log)
 
 	log.Notice.Log("Server up and running.\n")
