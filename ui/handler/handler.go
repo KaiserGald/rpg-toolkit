@@ -7,7 +7,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"regexp"
 
@@ -16,13 +15,21 @@ import (
 	"github.com/KaiserGald/rpgApp/ui/handler/handlers"
 )
 
-var routes []handle.Route
+var (
+	routes []handle.Route
+	log    *logger.Logger
+)
 
-func init() {
+// Start starts the handler
+func Start(lg *logger.Logger) error {
+	log = lg
+	index.Route().Init(log)
 	err := Add(index.Route())
 	if err != nil {
-		return
+		return err
 	}
+
+	return nil
 }
 
 // Add adds a new route to the handler
@@ -35,10 +42,9 @@ func Add(r *handle.Route) error {
 }
 
 // Handle handles all the registered routes
-func Handle(log *logger.Logger) {
-	log.Debug.Log("Handling")
+func Handle() {
+	log.Debug.Log("Route Handler Started.")
 	for _, route := range routes {
-		fmt.Println(route.Name())
 		http.Handle(route.Name(), route.Handler())
 	}
 }

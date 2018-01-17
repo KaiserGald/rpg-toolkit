@@ -37,7 +37,11 @@ func Run(cfg *Config, lg *logger.Logger) error {
 		return err
 	}
 
-	ui.Start(l, log)
+	err = ui.Start(l, log)
+	if err != nil {
+		log.Error.Log("Error Starting UI.\n")
+		return err
+	}
 	comserver.Start(log)
 	comhandler.Start(log)
 

@@ -22,6 +22,7 @@ func init() {
 
 // handleFunc is the actual handler for the function
 func handleFunc(w http.ResponseWriter, r *http.Request) {
+	route.Log().Debug.Log("Handling Route '/'.\n")
 	http.ServeFile(w, r, "assets/static/index.html")
 }
 

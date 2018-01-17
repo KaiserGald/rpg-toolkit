@@ -15,7 +15,7 @@ import (
 )
 
 // Start initializes and starts the ui router
-func Start(listener net.Listener, log *logger.Logger) {
+func Start(listener net.Listener, log *logger.Logger) error {
 
 	log.Info.Log("Starting front-end.\n")
 
@@ -24,9 +24,14 @@ func Start(listener net.Listener, log *logger.Logger) {
 		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 16,
 	}
-
-	handler.Handle(log)
+	err := handler.Start(log)
+	if err != nil {
+		log.Error.Log("Error starting route handler.\n")
+		return err
+	}
+	handler.Handle()
 	go server.Serve(listener)
 
 	log.Info.Log("Front-end up and running.\n")
+	return nil
 }

@@ -7,12 +7,15 @@ package handle
 
 import (
 	"net/http"
+
+	"github.com/KaiserGald/rpgApp/services/logger"
 )
 
 // Route contains data about a specific route
 type Route struct {
 	name    string
 	handler http.Handler
+	log     *logger.Logger
 }
 
 // Name returns the name of the Route
@@ -33,4 +36,14 @@ func (r *Route) Handler() http.Handler {
 // SetHandler sets the handler function for the route
 func (r *Route) SetHandler(fn http.HandlerFunc) {
 	r.handler = fn
+}
+
+// Log returns a pointer to the logger
+func (r *Route) Log() *logger.Logger {
+	return r.log
+}
+
+// Init initializes the route
+func (r *Route) Init(lg *logger.Logger) {
+	r.log = lg
 }
