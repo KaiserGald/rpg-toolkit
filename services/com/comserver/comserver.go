@@ -5,7 +5,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/KaiserGald/rpgApp/services/logger"
+	"github.com/KaiserGald/unlichtServer/services/logger"
 )
 
 var conns []*net.TCPConn

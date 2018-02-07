@@ -10,12 +10,21 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/KaiserGald/rpgApp/services/logger"
-	"github.com/KaiserGald/rpgApp/ui/handler"
+	"github.com/KaiserGald/unlichtServer/services/logger"
+	"github.com/KaiserGald/unlichtServer/ui/handler"
 )
 
 // Start initializes and starts the ui router
 func Start(listener net.Listener, log *logger.Logger) error {
+
+	cacheResource := func(h http.Handler) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			e := "\"" + r.URL.Path + "\""
+			w.Header().Add("Etag", e)
+			w.Header().Add("Cache-Control", "max-age=691200")
+			h.ServeHTTP(w, r)
+		}
+	}
 
 	log.Info.Log("Starting front-end.\n")
 
@@ -30,6 +39,9 @@ func Start(listener net.Listener, log *logger.Logger) error {
 		return err
 	}
 	handler.Handle()
+	http.Handle("/img/", http.StripPrefix("/img", cacheResource(http.FileServer(http.Dir("./app/assets/img")))))
+	http.Handle("/css/", http.StripPrefix("/css", cacheResource(http.FileServer(http.Dir("./app/assets/css")))))
+	http.Handle("/js/", http.StripPrefix("/js", cacheResource(http.FileServer(http.Dir("./app/assets/js")))))
 	go server.Serve(listener)
 
 	log.Info.Log("Front-end up and running.\n")

@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/KaiserGald/rpgApp/services/com/comserver"
-	"github.com/KaiserGald/rpgApp/services/logger"
+	"github.com/KaiserGald/unlichtServer/services/com/comserver"
+	"github.com/KaiserGald/unlichtServer/services/logger"
 )
 
 const (

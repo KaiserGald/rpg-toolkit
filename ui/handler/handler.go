@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/KaiserGald/rpgApp/services/logger"
-	"github.com/KaiserGald/rpgApp/ui/handler/handle"
-	"github.com/KaiserGald/rpgApp/ui/handler/handlers"
+	"github.com/KaiserGald/unlichtServer/services/logger"
+	"github.com/KaiserGald/unlichtServer/ui/handler/handle"
+	"github.com/KaiserGald/unlichtServer/ui/handler/handlers"
 )
 
 var (

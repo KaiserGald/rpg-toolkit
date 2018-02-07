@@ -8,7 +8,7 @@ package handle
 import (
 	"net/http"
 
-	"github.com/KaiserGald/rpgApp/services/logger"
+	"github.com/KaiserGald/unlichtServer/services/logger"
 )
 
 // Route contains data about a specific route

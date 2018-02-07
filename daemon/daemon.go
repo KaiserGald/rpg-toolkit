@@ -12,10 +12,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/KaiserGald/rpgApp/services/com/comhandler"
-	"github.com/KaiserGald/rpgApp/services/com/comserver"
-	"github.com/KaiserGald/rpgApp/services/logger"
-	"github.com/KaiserGald/rpgApp/ui"
+	"github.com/KaiserGald/unlichtServer/services/com/comhandler"
+	"github.com/KaiserGald/unlichtServer/services/com/comserver"
+	"github.com/KaiserGald/unlichtServer/services/logger"
+	"github.com/KaiserGald/unlichtServer/ui"
 )
 
 var log *logger.Logger
@@ -57,6 +57,6 @@ func waitForSignal() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	s := <-ch
 
-	log.Debug.Log("Got signal: %v, exiting.", s)
+	log.Debug.Log("Got signal: %v, exiting...", s)
 	time.Sleep(2 * time.Second)
 }
