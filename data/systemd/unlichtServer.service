@@ -14,7 +14,7 @@ RestartSec=10
 startLimitIntercalSec=60
 
 WorkingDirectory=/usr/local/bin/
-ExecStart=/usr/local/bin/unlichtServer -d
+ExecStart=/usr/local/bin/unlichtServer -d -c
 
 PermissionsStartOnly=true
 ExecStartPre=/bin/mkdir -p /var/log/unlichtServer
