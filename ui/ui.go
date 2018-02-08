@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/KaiserGald/unlichtServer/services/logger"
+	"github.com/KaiserGald/logger"
 	"github.com/KaiserGald/unlichtServer/ui/handler"
 )
 

@@ -10,8 +10,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/KaiserGald/logger"
 	"github.com/KaiserGald/unlichtServer/daemon"
-	"github.com/KaiserGald/unlichtServer/services/logger"
 )
 
 var dev bool
@@ -69,12 +69,10 @@ func configureDaemon(cfg *daemon.Config) {
 }
 
 func main() {
-	log := &logger.Logger{}
+	log := logger.New()
 	cfg := processCLI()
 
-	log.Init(os.Stdout, os.Stdout, os.Stdout, os.Stderr, logLevel)
-
 	if err := daemon.Run(cfg, log); err != nil {
-		log.Error.Log("Error in main(): %v\n", err)
+		log.Error.Log("Error in main(): %v", err)
 	}
 }

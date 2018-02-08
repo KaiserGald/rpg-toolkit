@@ -12,9 +12,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/KaiserGald/logger"
 	"github.com/KaiserGald/unlichtServer/services/com/comhandler"
 	"github.com/KaiserGald/unlichtServer/services/com/comserver"
-	"github.com/KaiserGald/unlichtServer/services/logger"
 	"github.com/KaiserGald/unlichtServer/ui"
 )
 

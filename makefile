@@ -65,6 +65,7 @@ ISSERVICERUNNING=$(shell ps -ef | grep -v grep | grep $(BINARY_NAME) | wc -l)
 DONE=@echo -e $(GREEN)Done\!$(NC)
 
 all: stop deps test build install clean run
+	@echo -e $(PURPLE)$(BINARY_NAME)$(NC) succssfully installed and started\!
 
 stop:
 	@echo -e Checking to see if $(PURPLE)$(BINARY_NAME)$(NC) server is running...
@@ -134,8 +135,9 @@ run:
 	@echo -e Starting up $(PURPLE)$(BINARY_NAME)$(NC) server as a daemon.
 	@sudo systemctl start $(BINARY_NAME)
 	$(DONE)
-	@echo -e Starting up $(PURPLE)Mimic$(NC).
+	@echo -e Starting up $(PURPLE)mimic$(NC).
 	@sudo mimic -c -w "assets:$(ASSETINSTALLDIR)" &
+	$(DONE)
 	@echo -e Type $(WHITE)\'$(CYAN)sudo journalctl -f -u $(BINARY_NAME)$(WHITE)\'$(NC) to open the server log in the terminal.
 
 test:
