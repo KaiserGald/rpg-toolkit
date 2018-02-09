@@ -54,10 +54,11 @@ func processFlags(cfg *daemon.Config) {
 }
 
 func configureDaemon(cfg *daemon.Config) {
+	log.SetLogLevel(logger.All)
+	log.Info.Log("Configuring server daemon...")
 	if dev {
 		cfg.DevMode = true
 		cfg.ListenSpec = ":" + strconv.Itoa(port)
-		log.SetLogLevel(logger.All)
 		log.Debug.Log("Started in dev mode.")
 	} else {
 		cfg.DevMode = false
@@ -83,8 +84,8 @@ func configureDaemon(cfg *daemon.Config) {
 
 func main() {
 	cfg := processCLI()
-	log.Debug.Log("Command line processed.")
 
+	log.Info.Log("Starting server daemon...")
 	if err := daemon.Run(cfg, log); err != nil {
 		log.Error.Log("Error in main(): %v", err)
 	}

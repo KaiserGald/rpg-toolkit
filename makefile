@@ -71,7 +71,6 @@ DONE=@echo -e $(GREEN)Done\!$(NC)
 
 all: stop deps test build install clean run
 	@echo -e $(PURPLE)$(BINARY_NAME)$(NC) successfully installed and started\!
-	@echo -e $(ARGS)
 
 stop:
 	@echo -e Checking to see if $(PURPLE)$(BINARY_NAME)$(NC) server is running...
@@ -103,7 +102,7 @@ install:
 	$(DONE)
 	@echo -e Installing $(PURPLE)Mimic$(NC)...
 	@make -C $(MIMICPATH)
-	@printf '#!/bin/bash\nsudo journalctl -f -u $(BINARY_NAME) -o cat' > $(BINARY_NAME)_log
+	@printf '#!/bin/bash\nsudo journalctl -n 13 -u $(BINARY_NAME) -o cat' > $(BINARY_NAME)_log
 	@sudo chmod +x $(BINARY_NAME)_log
 	$(DONE)
 
