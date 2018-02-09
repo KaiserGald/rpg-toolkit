@@ -2,6 +2,7 @@
 Description=unlichtServer Server
 ConditionPathExists=/usr/local/bin/unlichtServer
 After=network.target
+StartLimitBurst=6
 
 [Service]
 Type=simple
@@ -11,10 +12,10 @@ LimitNOFILE=1024
 
 Restart=on-success
 RestartSec=10
-startLimitIntercalSec=60
+StartLimitInterval=70
 
 WorkingDirectory=/usr/local/bin/
-ExecStart=/usr/local/bin/unlichtServer -d
+ExecStart=/usr/local/bin/unlichtServer -d -c
 
 PermissionsStartOnly=true
 ExecStartPre=/bin/mkdir -p /var/log/unlichtServer

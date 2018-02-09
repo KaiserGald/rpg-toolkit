@@ -10,18 +10,20 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/KaiserGald/logger"
 	"github.com/KaiserGald/unlichtServer/daemon"
-	"github.com/KaiserGald/unlichtServer/services/logger"
 )
 
 var dev bool
 var port int
 var verbose bool
 var quiet bool
+var color bool
 var log *logger.Logger
 var logLevel int
 
 func processCLI() *daemon.Config {
+	log = logger.New()
 	cfg := &daemon.Config{}
 
 	processFlags(cfg)
@@ -34,6 +36,9 @@ func processCLI() *daemon.Config {
 func processFlags(cfg *daemon.Config) {
 	flag.BoolVar(&dev, "dev", false, "sets server to dev mode")
 	flag.BoolVar(&dev, "d", false, "sets server to dev mode")
+
+	flag.BoolVar(&color, "color", false, "Colors the server output.")
+	flag.BoolVar(&color, "c", false, "Colors the server output.")
 
 	flag.IntVar(&port, "port", 8080, "sets listen port for server")
 	flag.IntVar(&port, "p", 8080, "sets listen port for server")
@@ -49,32 +54,39 @@ func processFlags(cfg *daemon.Config) {
 }
 
 func configureDaemon(cfg *daemon.Config) {
+	log.SetLogLevel(logger.All)
+	log.Info.Log("Configuring server daemon...")
 	if dev {
 		cfg.DevMode = true
 		cfg.ListenSpec = ":" + strconv.Itoa(port)
-		logLevel = 0
+		log.Debug.Log("Started in dev mode.")
 	} else {
 		cfg.DevMode = false
 		cfg.ListenSpec = ":" + os.Getenv("PORT")
-		logLevel = 2
+		log.SetLogLevel(logger.Normal)
+		log.Debug.Log("Started in normal mode.")
 	}
 
 	if verbose {
-		logLevel = 1
+		log.SetLogLevel(logger.Verbose)
+		log.Debug.Log("Started in verbose mode.")
 	}
 
 	if quiet {
-		logLevel = 3
+		log.SetLogLevel(logger.ErrorsOnly)
+		log.Debug.Log("Started in quiet mode.")
 	}
+	if color {
+		log.Debug.Log("Started in colored output mode.")
+	}
+	log.ShowColor(color)
 }
 
 func main() {
-	log := &logger.Logger{}
 	cfg := processCLI()
 
-	log.Init(os.Stdout, os.Stdout, os.Stdout, os.Stderr, logLevel)
-
+	log.Info.Log("Starting server daemon...")
 	if err := daemon.Run(cfg, log); err != nil {
-		log.Error.Log("Error in main(): %v\n", err)
+		log.Error.Log("Error in main(): %v", err)
 	}
 }

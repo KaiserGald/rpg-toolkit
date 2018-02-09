@@ -12,10 +12,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/KaiserGald/logger"
+	"github.com/KaiserGald/unlichtServer/router"
 	"github.com/KaiserGald/unlichtServer/services/com/comhandler"
 	"github.com/KaiserGald/unlichtServer/services/com/comserver"
-	"github.com/KaiserGald/unlichtServer/services/logger"
-	"github.com/KaiserGald/unlichtServer/ui"
 )
 
 var log *logger.Logger
@@ -30,22 +30,22 @@ type Config struct {
 func Run(cfg *Config, lg *logger.Logger) error {
 	log = lg
 
-	log.Notice.Log("Starting HTTP on %s\n", cfg.ListenSpec)
+	log.Notice.Log("Starting HTTP listener on %s", cfg.ListenSpec)
 	l, err := net.Listen("tcp", cfg.ListenSpec)
 	if err != nil {
-		log.Error.Log("Error creating listener: %v\n", err)
+		log.Error.Log("Error creating listener: %v", err)
 		return err
 	}
 
-	err = ui.Start(l, log)
+	err = router.Start(l, log)
 	if err != nil {
-		log.Error.Log("Error Starting UI.\n")
+		log.Error.Log("Error Starting Router.")
 		return err
 	}
 	comserver.Start(log)
 	comhandler.Start(log)
 
-	log.Notice.Log("Server up and running.\n")
+	log.Notice.Log("Server up and running.")
 
 	waitForSignal()
 

@@ -13,6 +13,7 @@ BINARY_NAME=unlichtServer
 # Path to the server binary install
 INSTALLPATH=/usr/local/bin/
 BINPATH=$(INSTALLPATH)$(BINARY_NAME)
+ARGS=-d -c
 
 # Log path
 LOGPATH=/var/log
@@ -23,11 +24,12 @@ DEVBINPATH=$(DEVBINDIR)/$(BINARY_NAME)
 
 # Installation paths
 WEBINSTALLDIR=/srv/$(BINARY_NAME)
-ASSETINSTALLDIR=$(WEBINSTALLDIR)/assets
-CONFINSTALLDIR=$(WEBINSTALLDIR)/conf
+APPINSTALLDIR=$(WEBINSTALLDIR)/app
+ASSETINSTALLDIR=$(APPINSTALLDIR)/assets
+CONFINSTALLDIR=$(APPINSTALLDIR)/conf
 
 # Source paths
-APPDIR=./ui/app
+APPDIR=./app
 COMPDIR=$(APPDIR)/components
 STATICDIR=$(APPDIR)/static
 ASSETSDIR=$(APPDIR)/assets
@@ -61,10 +63,14 @@ SED_COLORED=sed ''/'\(--- PASS\)'/s//$$(printf $(GREEN)---\\x20PASS)/'' | sed ''
 # script to see if service is running
 ISSERVICERUNNING=$(shell ps -ef | grep -v grep | grep $(BINARY_NAME) | wc -l)
 
+# script to make the .service file
+MAKESERVICECONFIG=@cat $(SERVICEDIR)/srvtmpl.service | sed ''s/'DESCRIPTION'/'$(BINARY_NAME) Server'/'' | sed ''s~'CONDITIONPATHEXISTS'~$(BINPATH)~'' | sed ''s~'WORKINGDIRECTORY'~$(INSTALLPATH)~'' | sed ''s~'EXECSTART'~$(BINPATH)~'' | sed ''s~'EXSTARTPRE'~$(LOGPATH)/$(BINARY_NAME)~'' | sed ''s~'SYSLOGIDENTIFIER'~$(BINARY_NAME)~'' | sed ''s~'ARGS'~'$(ARGS)'~ > $(SERVICECONFIG)
+
 # done script
 DONE=@echo -e $(GREEN)Done\!$(NC)
 
 all: stop deps test build install clean run
+	@echo -e $(PURPLE)$(BINARY_NAME)$(NC) successfully installed and started\!
 
 stop:
 	@echo -e Checking to see if $(PURPLE)$(BINARY_NAME)$(NC) server is running...
@@ -87,7 +93,7 @@ build:
 	@go build -o $(BINARY_NAME)
 	$(DONE)
 	@echo -e Writing conf file...
-	@echo -e "{\n\t\"Dir\": \"$(shell pwd)\"\n}" > $(CONFDIR)/conf.json
+	@echo "{\n\t\"Dir\": \"$(shell pwd)\"\n}" > $(CONFDIR)/conf.json
 	$(DONE)
 
 install:
@@ -96,30 +102,26 @@ install:
 	$(DONE)
 	@echo -e Installing $(PURPLE)Mimic$(NC)...
 	@make -C $(MIMICPATH)
+	@printf '#!/bin/bash\nsudo journalctl -f -n 20 -u $(BINARY_NAME) -o cat' > $(BINARY_NAME)_log
+	@sudo chmod +x $(BINARY_NAME)_log
 	$(DONE)
 
 ifeq ("$(wildcard $(WEBINSTALLDIR))", "")
 	@sudo mkdir $(WEBINSTALLDIR)
 endif
 
-ifeq ("$(wildcard $(ASSETINSTALLDIR))", "")
-	@sudo mkdir $(ASSETINSTALLDIR)
+ifeq ("$(wildcard $(APPINSTALLDIR))", "")
+	@sudo mkdir $(APPINSTALLDIR)
 endif
-
-	@sudo cp -ru "$(shell pwd)/$(CSSDIR)" $(ASSETINSTALLDIR)
-	@sudo cp -ru "$(shell pwd)/$(IMGDIR)" $(ASSETINSTALLDIR)
-	@sudo cp -ru "$(shell pwd)/$(JSDIR)" $(ASSETINSTALLDIR)
-	@sudo cp -ru "$(shell pwd)/$(COMPDIR)" $(WEBINSTALLDIR)
-	@sudo cp -ru "$(shell pwd)/$(STATICDIR)" $(WEBINSTALLDIR)
-	@sudo cp -ru "$(shell pwd)/$(CONFDIR)" $(WEBINSTALLDIR)
 
 ifeq ("$(wildcard $(LOCALSERVICECONFIG))", "")
 	@sudo rm -f $(LOCALSERVICECONFIG)
 endif
 
-ifeq ("$(wildcard $(SERVICECONFIG))", "")
-	@cat $(SERVICEDIR)/srvtmpl.service | sed ''s/'DESCRIPTION'/'$(BINARY_NAME) Server'/'' | sed ''s~'CONDITIONPATHEXISTS'~$(BINPATH)~'' | sed ''s~'WORKINGDIRECTORY'~$(INSTALLPATH)~'' | sed ''s~'EXECSTART'~$(BINPATH)~'' | sed ''s~'EXSTARTPRE'~$(LOGPATH)/$(BINARY_NAME)~'' | sed ''s~'SYSLOGIDENTIFIER'~$(BINARY_NAME)~'' > $(SERVICECONFIG)
+ifneq ("$(wildcard $(SERVICECONFIG))", "")
+	@rm -f $(SERVICECONFIG)
 endif
+	${MAKESERVICECONFIG}
 
 	@sudo cp -u $(SERVICECONFIG) $(LOCALSERVICEDIR)
 	$(DONE)
@@ -134,9 +136,10 @@ run:
 	@echo -e Starting up $(PURPLE)$(BINARY_NAME)$(NC) server as a daemon.
 	@sudo systemctl start $(BINARY_NAME)
 	$(DONE)
-	@echo -e Starting up $(PURPLE)Mimic$(NC).
-	@sudo mimic -c -w "assets:$(ASSETINSTALLDIR)" &
-	@echo -e Type $(WHITE)\'$(CYAN)sudo journalctl -f -u $(BINARY_NAME)$(WHITE)\'$(NC) to open the server log in the terminal.
+	@echo -e Starting up $(PURPLE)mimic$(NC).
+	@sudo mimic -c -w "app:$(APPINSTALLDIR)" &
+	$(DONE)
+	@echo -e Type $(WHITE)\'$(CYAN)./$(BINARY_NAME)_log$(WHITE)\'$(NC) to open the server log in the terminal.
 
 test:
 	@go test | $(SED_COLORED)

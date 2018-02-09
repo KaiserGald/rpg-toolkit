@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/KaiserGald/logger"
 	"github.com/KaiserGald/unlichtServer/services/com/comserver"
-	"github.com/KaiserGald/unlichtServer/services/logger"
 )
 
 const (
@@ -26,6 +26,7 @@ var (
 // Start start the Command Handler
 func Start(lg *logger.Logger) {
 	log = lg
+	log.Debug.Log("Starting comhandler.")
 	shutdown = false
 	var err error
 	p, err = os.FindProcess(os.Getpid())

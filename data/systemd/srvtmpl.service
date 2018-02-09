@@ -2,6 +2,7 @@
 Description=DESCRIPTION
 ConditionPathExists=CONDITIONPATHEXISTS
 After=network.target
+StartLimitBurst=6
 
 [Service]
 Type=simple
@@ -11,10 +12,10 @@ LimitNOFILE=1024
 
 Restart=on-success
 RestartSec=10
-startLimitIntercalSec=60
+StartLimitInterval=70
 
 WorkingDirectory=WORKINGDIRECTORY
-ExecStart=EXECSTART -d
+ExecStart=EXECSTART ARGS
 
 PermissionsStartOnly=true
 ExecStartPre=/bin/mkdir -p EXSTARTPRE
