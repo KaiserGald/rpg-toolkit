@@ -93,7 +93,7 @@ build:
 	@go build -o $(BINARY_NAME)
 	$(DONE)
 	@echo -e Writing conf file...
-	@echo -e "{\n\t\"Dir\": \"$(shell pwd)\"\n}" > $(CONFDIR)/conf.json
+	@echo "{\n\t\"Dir\": \"$(shell pwd)\"\n}" > $(CONFDIR)/conf.json
 	$(DONE)
 
 install:
@@ -102,7 +102,7 @@ install:
 	$(DONE)
 	@echo -e Installing $(PURPLE)Mimic$(NC)...
 	@make -C $(MIMICPATH)
-	@printf '#!/bin/bash\nsudo journalctl -n 13 -u $(BINARY_NAME) -o cat' > $(BINARY_NAME)_log
+	@printf '#!/bin/bash\nsudo journalctl -f -n 20 -u $(BINARY_NAME) -o cat' > $(BINARY_NAME)_log
 	@sudo chmod +x $(BINARY_NAME)_log
 	$(DONE)
 

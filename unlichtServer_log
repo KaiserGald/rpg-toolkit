@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo journalctl -n 13 -u unlichtServer -o cat
+sudo journalctl -f -n 20 -u unlichtServer -o cat

@@ -23,6 +23,7 @@ var (
 // Start starts the handler
 func Start(lg *logger.Logger) error {
 	log = lg
+	log.Debug.Log("Starting route handler.")
 	index.Route().Init(log)
 	err := Add(index.Route())
 	if err != nil {
@@ -34,6 +35,7 @@ func Start(lg *logger.Logger) error {
 
 // Add adds a new route to the handler
 func Add(r *handle.Route) error {
+	log.Debug.Log("Adding '%v' to handler.", r.Name())
 	if compareRoute(r) {
 		return errors.New("Route already exists")
 	}

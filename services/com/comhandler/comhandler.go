@@ -26,6 +26,7 @@ var (
 // Start start the Command Handler
 func Start(lg *logger.Logger) {
 	log = lg
+	log.Debug.Log("Starting comhandler.")
 	shutdown = false
 	var err error
 	p, err = os.FindProcess(os.Getpid())

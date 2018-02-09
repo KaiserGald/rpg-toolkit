@@ -30,7 +30,7 @@ type Config struct {
 func Run(cfg *Config, lg *logger.Logger) error {
 	log = lg
 
-	log.Notice.Log("Starting HTTP on %s", cfg.ListenSpec)
+	log.Notice.Log("Starting HTTP listener on %s", cfg.ListenSpec)
 	l, err := net.Listen("tcp", cfg.ListenSpec)
 	if err != nil {
 		log.Error.Log("Error creating listener: %v", err)
@@ -39,7 +39,7 @@ func Run(cfg *Config, lg *logger.Logger) error {
 
 	err = router.Start(l, log)
 	if err != nil {
-		log.Error.Log("Error Starting UI.")
+		log.Error.Log("Error Starting Router.")
 		return err
 	}
 	comserver.Start(log)

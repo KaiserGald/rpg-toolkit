@@ -30,7 +30,7 @@ func Start(lg *logger.Logger) error {
 	log = lg
 	service = ":8081"
 
-	log.Info.Log("Launching Command Server")
+	log.Info.Log("Starting Command Server Listener on %v.", service)
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
 	if err != nil {

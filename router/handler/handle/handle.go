@@ -46,4 +46,5 @@ func (r *Route) Log() *logger.Logger {
 // Init initializes the route
 func (r *Route) Init(lg *logger.Logger) {
 	r.log = lg
+	r.log.Debug.Log("Route '%v' found!", r.Name())
 }
