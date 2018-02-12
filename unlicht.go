@@ -11,7 +11,7 @@ import (
 	"strconv"
 
 	"github.com/KaiserGald/logger"
-	"github.com/KaiserGald/unlichtServer/daemon"
+	"github.com/KaiserGald/unlicht-server/daemon"
 )
 
 var dev bool

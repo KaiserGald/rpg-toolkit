@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/KaiserGald/logger"
-	"github.com/KaiserGald/unlichtServer/router/handler"
+	"github.com/KaiserGald/unlicht-server/router/handler"
 )
 
 // Start initializes and starts the ui router

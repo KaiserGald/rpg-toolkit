@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/KaiserGald/logger"
-	"github.com/KaiserGald/unlichtServer/router"
-	"github.com/KaiserGald/unlichtServer/services/com/comhandler"
-	"github.com/KaiserGald/unlichtServer/services/com/comserver"
+	"github.com/KaiserGald/unlicht-server/router"
+	"github.com/KaiserGald/unlicht-server/services/com/comhandler"
+	"github.com/KaiserGald/unlicht-server/services/com/comserver"
 )
 
 var log *logger.Logger

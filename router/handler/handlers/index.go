@@ -8,7 +8,7 @@ package index
 import (
 	"net/http"
 
-	"github.com/KaiserGald/unlichtServer/router/handler/handle"
+	"github.com/KaiserGald/unlicht-server/router/handler/handle"
 )
 
 // Route is the route that will be used

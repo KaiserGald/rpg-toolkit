@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/KaiserGald/logger"
-	"github.com/KaiserGald/unlichtServer/services/com/comserver"
+	"github.com/KaiserGald/unlicht-server/services/com/comserver"
 )
 
 const (
