@@ -1,0 +1,22 @@
+# install script for unlicht-server
+# 7 February 2018
+# Code is licensed under the MIT License
+# © 2018 Scott Isenberg
+
+source data/conf/app.cfg
+
+export BINARY_NAME=$1
+export ABSPATH
+export INSTALLPATH
+
+if [ "$BINARY_NAME" = "" ]; then
+  printf "Please enter the name of the app to be installed.\nUsage: install [APPNAME]\n"
+  exit
+fi
+NOSPACE=[[:space:]]
+if [[ $BINARY_NAME =~ $NOSPACE ]]; then
+  printf "Please do not include any spaces in the app's name.\n"
+  exit
+fi
+
+scripts/dockerscript

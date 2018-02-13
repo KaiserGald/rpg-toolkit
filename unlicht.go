@@ -84,6 +84,7 @@ func configureDaemon(cfg *daemon.Config) {
 
 func main() {
 	cfg := processCLI()
+	log.Notice.Log("Starting app '%v'!", os.Getenv("BINARY_NAME"))
 
 	log.Info.Log("Starting server daemon...")
 	if err := daemon.Run(cfg, log); err != nil {
