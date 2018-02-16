@@ -95,7 +95,7 @@ case ${command} in
         port=$OPTARG
         ;;
       \?)
-        echo "Option was not recognized option."
+        echo "Option was not a recognized option."
         usage
         exit 2
         ;;

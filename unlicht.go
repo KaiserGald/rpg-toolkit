@@ -54,17 +54,19 @@ func processFlags(cfg *daemon.Config) {
 }
 
 func configureDaemon(cfg *daemon.Config) {
+	env := os.Getenv("RUN_ENV")
 	log.SetLogLevel(logger.All)
+	log.Debug.Log(env)
 	log.Info.Log("Configuring server daemon...")
-	if dev {
+	if env == "DEV" {
 		cfg.DevMode = true
 		cfg.ListenSpec = ":" + strconv.Itoa(port)
 		log.Debug.Log("Started in dev mode.")
-	} else {
+	} else if env == "PROD" {
 		cfg.DevMode = false
 		cfg.ListenSpec = ":" + os.Getenv("PORT")
 		log.SetLogLevel(logger.Normal)
-		log.Debug.Log("Started in normal mode.")
+		log.Debug.Log("Started in production mode.")
 	}
 
 	if verbose {
