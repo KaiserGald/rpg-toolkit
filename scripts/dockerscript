@@ -1,9 +1,10 @@
 #!/bin/bash
-#source data/conf/app.cfg
 
 OPTIND=1
+INSTALL=0
 CLEAN=0
-while getopts :c option
+RUN=0
+while getopts :i:c:r option
 do
   case "${option}"
   in
@@ -13,9 +14,12 @@ do
   esac
 done
 
-if [ $CLEAN == 0 ]; then
+if [ $INSTALL == 1 ]; then
   sudo docker build -t $BINARY_NAME:latest . --build-arg app_name=$BINARY_NAME --build-arg src_path=/go/src/github.com/KaiserGald --build-arg install_path=$INSTALLPATH
-  sudo docker run -p 8080:8080 -v $ABSPATH/app:/srv/$BINARY_NAME/app -it $BINARY_NAME
-elif [ $CLEAN == 1 ]; then
+fi
+if [ $CLEAN == 1 ]; then
   sudo docker image rm -f $BINARY_NAME
+fi
+if [ $RUN == 1 ]; then
+  sudo docker run -p 8080:8080 -v $ABSPATH/app:/srv/$BINARY_NAME/app -it $BINARY_NAME
 fi

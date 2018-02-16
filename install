@@ -4,10 +4,8 @@
 # © 2018 Scott Isenberg
 
 source data/conf/app.cfg
-
-export BINARY_NAME=$1
-export ABSPATH
-export INSTALLPATH
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BINARY_NAME=$1
 
 if [ "$BINARY_NAME" = "" ]; then
   printf "Please enter the name of the app to be installed.\nUsage: install [APPNAME]\n"
@@ -19,4 +17,11 @@ if [[ $BINARY_NAME =~ $NOSPACE ]]; then
   exit
 fi
 
-scripts/dockerscript
+line="BINARY_NAME=${BINARY_NAME}"
+cat data/conf/default.cfg | awk -v str=$line '{ if (NR==2) print str; else print $0 }' > data/conf/app.cfg
+line="alias unlichtsrv='${DIR}/scripts/unlichtsrv'"
+if [ "$(grep 'alias unlichtsrv' $HOME/.bashrc)" != "$line" ]; then
+  sudo echo "alias unlichtsrv='${DIR}/scripts/unlichtsrv'" >> ~/.bashrc
+fi
+
+exec bash
