@@ -1,0 +1,29 @@
+[Unit]
+Description=unlicht-server Server
+ConditionPathExists=/usr/local/bin/unlicht-server
+After=network.target
+StartLimitBurst=6
+
+[Service]
+Type=simple
+User=dungeonmaster
+Group=dungeonmaster
+LimitNOFILE=1024
+
+Restart=on-success
+RestartSec=10
+StartLimitInterval=70
+
+WorkingDirectory=/usr/local/bin/
+ExecStart=/usr/local/bin/unlicht-server "-d -c"
+
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /var/log/unlicht-server
+ExecStartPre=/bin/chown syslog:adm /var/log/unlicht-server
+ExecStartPre=/bin/chmod 755 /var/log/unlicht-server
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=unlicht-server
+
+[Install]
+WantedBy=mult-user.target

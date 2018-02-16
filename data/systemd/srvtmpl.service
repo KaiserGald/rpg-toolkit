@@ -1,0 +1,29 @@
+[Unit]
+Description=DESCRIPTION
+ConditionPathExists=CONDITIONPATHEXISTS
+After=network.target
+StartLimitBurst=6
+
+[Service]
+Type=simple
+User=dungeonmaster
+Group=dungeonmaster
+LimitNOFILE=1024
+
+Restart=on-success
+RestartSec=10
+StartLimitInterval=70
+
+WorkingDirectory=WORKINGDIRECTORY
+ExecStart=EXECSTART ARGS
+
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p EXSTARTPRE
+ExecStartPre=/bin/chown syslog:adm EXSTARTPRE
+ExecStartPre=/bin/chmod 755 EXSTARTPRE
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=SYSLOGIDENTIFIER
+
+[Install]
+WantedBy=mult-user.target

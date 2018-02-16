@@ -1,8 +1,18 @@
 {
-  "name": "unlicht-rpg-app",
-  "version": "0.0.1-2",
+  "name": "unlicht-server",
+  "version": "0.1.1",
+  "license": "MIT",
+  "description": "Backend for all Unlicht Web Apps",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KaiserGald/unlichtServer"
+  },
+  "homepage": "https://www.scottisenberg.com",
   "devDependencies": {
-    "grunt": "^1.0.1",
+    "grunt": "^1.0.2",
     "grunt-bump": "^0.8.0"
+  },
+  "dependencies": {
+    "vue": "^2.5.13"
   }
 }

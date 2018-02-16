@@ -2,14 +2,14 @@ module.exports = function(grunt) {
   //load npm tasks
   grunt.loadNpmTasks('grunt-bump');
 
-  // grunt-bump
+  // grunt-bump config
   grunt.initConfig({
     bump: {
       options: {
         files: ['package.json'],
         updateConfigs: [],
         commit: true,
-        commitMessage: 'Release v%VERSION%',
+        commitMessage: 'Dev v%VERSION%',
         commitFiles: ['-a'],
         createTag: true,
         tagName: 'v%VERSION%',
@@ -18,7 +18,7 @@ module.exports = function(grunt) {
         pushTo :'origin',
         gotDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
         globalReplace: false,
-        prereleaseName: false,
+        prereleaseName: 'dev',
         metadata: '',
         regExp: false
       }

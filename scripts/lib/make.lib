@@ -1,0 +1,11 @@
+# script to colorize the go test output
+SED_COLORED=sed ''/'\(--- PASS\)'/s//$$(printf $(GREEN)---\\x20PASS)/'' | sed ''/PASS/s//$$(printf $(GREEN)PASS)/'' | sed  ''/'\(=== RUN\)'/s//$$(printf $(YELLOW)===\\x20RUN)/'' | sed ''/ok/s//$$(printf $(GREEN)ok)/'' | sed  ''/'\(--- FAIL\)'/s//$$(printf $(RED)---\\x20FAIL)/'' | sed  ''/FAIL/s//$$(printf $(RED)FAIL)/'' | sed ''/RUN/s//$$(printf $(YELLOW)RUN)/'' | sed ''/?/s//$$(printf $(ORANGE)?)/'' | sed ''/'\(^\)'/s//$$(printf $(NC))/''
+
+# script to see if service is running
+ISSERVICERUNNING=$(shell ps -ef | grep -v grep | grep $(BINARY_NAME) | wc -l)
+
+# script to make the .service file
+MAKESERVICECONFIG=@cat $(SERVICEDIR)/srvtmpl.service | sed ''s/'DESCRIPTION'/'$(BINARY_NAME) Server'/'' | sed ''s~'CONDITIONPATHEXISTS'~$(BINPATH)~'' | sed ''s~'WORKINGDIRECTORY'~$(INSTALLPATH)~'' | sed ''s~'EXECSTART'~$(BINPATH)~'' | sed ''s~'EXSTARTPRE'~$(LOGPATH)/$(BINARY_NAME)~'' | sed ''s~'SYSLOGIDENTIFIER'~$(BINARY_NAME)~'' | sed ''s~'ARGS'~'$(ARGS)'~ > $(SERVICECONFIG)
+
+# done script
+DONE=@echo -e $(GREEN)Done\!$(NC)
