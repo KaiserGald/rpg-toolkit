@@ -7,8 +7,9 @@ package index
 
 import (
 	"net/http"
+	"os"
 
-	"github.com/KaiserGald/unlichtServer/router/handler/handle"
+	"github.com/KaiserGald/unlicht-server/router/handler/handle"
 )
 
 // Route is the route that will be used
@@ -23,7 +24,7 @@ func init() {
 // handleFunc is the actual handler for the function
 func handleFunc(w http.ResponseWriter, r *http.Request) {
 	route.Log().Debug.Log("Handling Route '/'.\n")
-	http.ServeFile(w, r, "/srv/unlichtServer/app/static/index.html")
+	http.ServeFile(w, r, "/srv/"+os.Getenv("BINARY_NAME")+"/app/static/index.html")
 }
 
 // Route returns a pointer to the route

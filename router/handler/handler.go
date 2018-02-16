@@ -11,8 +11,8 @@ import (
 	"regexp"
 
 	"github.com/KaiserGald/logger"
-	"github.com/KaiserGald/unlichtServer/router/handler/handle"
-	"github.com/KaiserGald/unlichtServer/router/handler/handlers"
+	"github.com/KaiserGald/unlicht-server/router/handler/handle"
+	"github.com/KaiserGald/unlicht-server/router/handler/handlers"
 )
 
 var (

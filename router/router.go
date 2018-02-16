@@ -8,10 +8,11 @@ package router
 import (
 	"net"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/KaiserGald/logger"
-	"github.com/KaiserGald/unlichtServer/router/handler"
+	"github.com/KaiserGald/unlicht-server/router/handler"
 )
 
 // Start initializes and starts the ui router
@@ -44,11 +45,11 @@ func Start(listener net.Listener, log *logger.Logger) error {
 	handler.Handle()
 	log.Info.Log("Setting up resource routes...")
 	log.Debug.Log("Setting up Route: /img/")
-	http.Handle("/img/", http.StripPrefix("/img", cacheResource(http.FileServer(http.Dir("/srv/unlichtServer/app/assets/img")))))
+	http.Handle("/img/", http.StripPrefix("/img", cacheResource(http.FileServer(http.Dir("/srv/"+os.Getenv("BINARY_NAME")+"/app/assets/img")))))
 	log.Debug.Log("Setting up Route: /css/")
-	http.Handle("/css/", http.StripPrefix("/css", cacheResource(http.FileServer(http.Dir("/srv/unlichtServer/app/assets/css")))))
+	http.Handle("/css/", http.StripPrefix("/css", cacheResource(http.FileServer(http.Dir("/srv/"+os.Getenv("BINARY_NAME")+"/app/assets/css")))))
 	log.Debug.Log("Setting up Route: /js/")
-	http.Handle("/js/", http.StripPrefix("/js", cacheResource(http.FileServer(http.Dir("/srv/unlichtServer/app/assets/js")))))
+	http.Handle("/js/", http.StripPrefix("/js", cacheResource(http.FileServer(http.Dir("/srv/"+os.Getenv("BINARY_NAME")+"/app/assets/js")))))
 	go server.Serve(listener)
 
 	log.Info.Log("Router successfully started.")

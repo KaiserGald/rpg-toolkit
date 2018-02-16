@@ -1,0 +1,25 @@
+#!/bin/bash
+
+OPTIND=1
+INSTALL=0
+CLEAN=0
+RUN=0
+while getopts :i:c:r option
+do
+  case "${option}"
+  in
+  c)
+    CLEAN=1
+    ;;
+  esac
+done
+
+if [ $INSTALL == 1 ]; then
+  sudo docker build -t $BINARY_NAME:latest . --build-arg app_name=$BINARY_NAME --build-arg src_path=/go/src/github.com/KaiserGald --build-arg install_path=$INSTALLPATH
+fi
+if [ $CLEAN == 1 ]; then
+  sudo docker image rm -f $BINARY_NAME
+fi
+if [ $RUN == 1 ]; then
+  sudo docker run -p 8080:8080 -v $ABSPATH/app:/srv/$BINARY_NAME/app -it $BINARY_NAME
+fi
