@@ -9,6 +9,6 @@ RUN mkdir /srv/$BINARY_NAME
 RUN mkdir -p $src_path/unlicht-server
 ADD . $src_path/unlicht-server
 RUN cd $src_path/unlicht-server && make all
-ENTRYPOINT $INSTALLPATH/$BINARY_NAME -d
+ENTRYPOINT $INSTALLPATH/$BINARY_NAME
 EXPOSE 8080
 EXPOSE 8081
