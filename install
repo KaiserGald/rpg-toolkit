@@ -3,25 +3,44 @@
 # Code is licensed under the MIT License
 # © 2018 Scott Isenberg
 
+#!/bin/bash
+
+# get configuration
 source data/conf/app.cfg
+source data/conf/output.cfg
+
+# get directory that the install script is in
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DOCKERPATH=/usr/bin/docker
 BINARY_NAME=$1
 
+# ignore if bad data
 if [ "$BINARY_NAME" = "" ]; then
-  printf "Please enter the name of the app to be installed.\nUsage: install [APPNAME]\n"
-  exit
+  printf "Please enter the name of the app to be installed.\nUsage: ${CYAN}install ${WHITE}[${PURPLE}APPNAME${WHITE}]${NC}\n"
+  exit 2
 fi
 NOSPACE=[[:space:]]
 if [[ $BINARY_NAME =~ $NOSPACE ]]; then
   printf "Please do not include any spaces in the app's name.\n"
-  exit
+  exit 2
 fi
 
+# write name of app to configuration file
 line="BINARY_NAME=${BINARY_NAME}"
 cat data/conf/default.cfg | awk -v str=$line '{ if (NR==2) print str; else print $0 }' > data/conf/app.cfg
+
+# write alias to ~/.bashrc
 line="alias unlichtsrv='${DIR}/scripts/unlichtsrv'"
 if [ "$(grep 'alias unlichtsrv' $HOME/.bashrc)" != "$line" ]; then
   sudo echo "alias unlichtsrv='${DIR}/scripts/unlichtsrv'" >> ~/.bashrc
 fi
 
-exec bash
+# write new service file
+cat ${SERVICEDIR}/srvtmpl.service | sed ''s/'DESCRIPTION'/"${BINARY_NAME} Server"/'' | sed ''s~'CONDITIONPATHEXISTS'~${DOCKERPATH}~'' | sed ''s~'WORKINGDIRECTORY'~${INSTALLPATH}~'' | sed ''s~'EXECSTART'~"${DOCKERPATH} run -e RUN_ENV=\${ENV} -p=\${PORT}:8080 -v $DIR/app:/srv/${BINARY_NAME}/app ${BINARY_NAME}:\${TAG}"~'' | sed ''s~'EXSTARTPRE'~${BINPATH}~'' | sed ''s~'SYSLOGIDENTIFIER'~${BINARY_NAME}~'' > $SERVICECONFIG
+sudo cp $SERVICECONFIG $LOCALSERVICEDIR
+
+# write helper for viewing server log
+printf "#!/bin/bash\nsudo journalctl -f -n 20 -u $BINARY_NAME -o cat" > ${BINARY_NAME}_log
+sudo chmod +x ${BINARY_NAME}_log
+echo -e "${PURPLE}$BINARY_NAME${NC} and ${PURPLE}unlichtsrv${NC} are now installed and ready to be used."
+echo -e "Type ${CYAN}unlichtsrv -b${NC} to build the docker image and ${CYAN}unlichtsrv -r${NC} to run it! Use ${WHITE}./${BINARY_NAME}_log${NC} to view the log after starting the server."

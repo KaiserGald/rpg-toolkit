@@ -1,26 +1,20 @@
 [Unit]
 Description=DESCRIPTION
-ConditionPathExists=CONDITIONPATHEXISTS
-After=network.target
+ConditionPathExists=/usr/bin/docker
+After=docker.service
+Requires=docker.service
 StartLimitBurst=6
 
 [Service]
 Type=simple
-User=dungeonmaster
-Group=dungeonmaster
 LimitNOFILE=1024
 
 Restart=on-success
 RestartSec=10
 StartLimitInterval=70
 
-WorkingDirectory=WORKINGDIRECTORY
-ExecStart=EXECSTART ARGS
-
-PermissionsStartOnly=true
-ExecStartPre=/bin/mkdir -p EXSTARTPRE
-ExecStartPre=/bin/chown syslog:adm EXSTARTPRE
-ExecStartPre=/bin/chmod 755 EXSTARTPRE
+EnvironmentFile=/etc/.unlichtconf
+ExecStart=EXECSTART
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=SYSLOGIDENTIFIER
