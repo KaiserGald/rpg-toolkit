@@ -31,9 +31,6 @@ install:
 	@echo -e Installing $(PURPLE)$(BINARY_NAME)$(NC) Server...
 	@cp -u $(BINARY_NAME) $(INSTALLPATH)
 	$(DONE)
-	@printf '#!/bin/bash\nsudo journalctl -f -n 20 -u $(BINARY_NAME) -o cat' > $(BINARY_NAME)_log
-	@chmod +x $(BINARY_NAME)_log
-	$(DONE)
 
 ifeq ("$(wildcard $(WEBINSTALLDIR))", "")
 	@mkdir $(WEBINSTALLDIR)

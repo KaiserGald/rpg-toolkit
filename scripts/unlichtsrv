@@ -40,8 +40,9 @@ build () {
 }
 
 run () {
-  if [ $# == 0 ]; then
-    sudo docker run -e RUN_ENV=DEV -p 8080:8080 -v $DIR/../app:/srv/$BINARY_NAME/app -it $BINARY_NAME
+  tag="latest"
+  if [ -n "$1" ]; then
+    tag=$1
   fi
   env="DEV"
   if [ -n "$2" ]; then
@@ -51,12 +52,22 @@ run () {
   if [ -n "$3" ]; then
     port=$3
   fi
-  sudo docker run -e RUN_ENV=$env -p $port:8080 -v $DIR/../app:/srv/$BINARY_NAME/app -it $BINARY_NAME
+  sudo printf "TAG=${tag}\nENV=${env}\nPORT=${port}\nDIR=${DIR}\n" | sudo tee /etc/.unlichtconf > /dev/null
+  container=$( sudo docker ps -q --filter ancestor=${BINARY_NAME} )
+  if [ -n "$container" ]; then
+    sudo docker stop $container > /dev/null
+  fi
+  sudo systemctl start $BINARY_NAME
   exit 0
 }
 
 delete () {
+  container=$( sudo docker ps -q --filter ancestor=${BINARY_NAME} )
+  if [ -n "$container" ]; then
+    sudo docker stop $container > /dev/null
+  fi
   sudo docker image rm -f $BINARY_NAME:$1
+  printf "\n\n"
   sudo docker images
   exit 0
 }
