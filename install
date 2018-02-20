@@ -30,5 +30,7 @@ fi
 
 # write new service file
 cat ${SERVICEDIR}/srvtmpl.service | sed ''s/'DESCRIPTION'/"${BINARY_NAME} Server"/'' | sed ''s~'CONDITIONPATHEXISTS'~${DOCKERPATH}~'' | sed ''s~'WORKINGDIRECTORY'~${INSTALLPATH}~'' | sed ''s~'EXECSTART'~"${DOCKERPATH} run -e RUN_ENV=\${ENV} -p=\${PORT}:8080 -v $DIR/app:/srv/${BINARY_NAME}/app ${BINARY_NAME}:\${TAG}"~'' | sed ''s~'EXSTARTPRE'~${BINPATH}~'' | sed ''s~'SYSLOGIDENTIFIER'~${BINARY_NAME}~'' > $SERVICECONFIG
-echo $LOCALSERVICEDIR
 sudo cp $SERVICECONFIG $LOCALSERVICEDIR
+
+printf "#!/bin/bash\nsudo journalctl -f -n 20 -u $BINARY_NAME -o cat" > ${BINARY_NAME}_log
+sudo chmod +x ${BINARY_NAME}_log

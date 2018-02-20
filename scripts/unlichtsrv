@@ -53,9 +53,10 @@ run () {
     port=$3
   fi
   sudo printf "TAG=${tag}\nENV=${env}\nPORT=${port}\nDIR=${DIR}\n" | sudo tee /etc/.unlichtconf > /dev/null
-  #sudo docker run -e RUN_ENV=$env -p $port:8080 -v $DIR/../app:/srv/$BINARY_NAME/app -it $BINARY_NAME:$tag
-  #sudo systemctl stop $BINARY_NAME
-  sudo docker stop $( sudo docker ps -q --filter ancestor=${BINARY_NAME} )
+  container=$( sudo docker ps -q --filter ancestor=${BINARY_NAME} )
+  if [ -n "$container" ]; then
+    sudo docker stop $container > /dev/null
+  fi
   sudo systemctl start $BINARY_NAME
   exit 0
 }
