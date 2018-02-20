@@ -1,17 +1,13 @@
 #!/bin/bash
 
+# Get directory unlichtsrv lives in
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/conf/app.cfg
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-WHITE='\033[1;37m'
-PURPLE='\e[95m'
-CYAN='\e[36m'
-YELLOW='\033[1;33m'
-ORANGE='\033[38;5;208m'
-NC='\033[0m'
+# get configuration data
+source $DIR/../data/conf/app.cfg
+source $DIR/../data/conf/output.cfg
 
+# usage message
 usage () {
   printf "${PURPLE}unlichtsrv${NC} usage: ${PURPLE}unlichtsrv ${CYAN}COMMAND${WHITE}|${CYAN}OPTION${NC}\n"
   printf "\n${WHITE}COMMANDS${NC}\n"
@@ -28,10 +24,13 @@ usage () {
   printf "\t${CYAN}-h ${YELLOW}[${PURPLE}<${WHITE}COMMAND${PURPLE}>${YELLOW}]${NC}: same as the ${CYAN}help${WHITE} COMMAND${NC} above.\n\n"
 }
 
+# build will build a docker image of the app being worked on
 build () {
+  # if no arg build image using latest tag
   if [ $# == 0 ]; then
     sudo docker build -t $BINARY_NAME:latest . --build-arg app_name=$BINARY_NAME --build-arg src_path=/go/src/github.com/KaiserGald --build-arg install_path=$INSTALLPATH
     echo -e "Image ${PURPLE}$BINARY_NAME${NC}:${WHITE}latest${NC} built."
+  # else use the tag
   else
     sudo docker build -t $BINARY_NAME:$1 . --build-arg app_name=$BINARY_NAME --build-arg src_path=/go/src/github.com/KaiserGald --build-arg install_path=$INSTALLPATH
     echo -e "Image ${PURPLE}$BINARY_NAME${NC}:${WHITE}$1${NC} built."
@@ -39,7 +38,11 @@ build () {
   exit 0
 }
 
+# run will stop the current container, freeing up the ports and then restart it using the supplied values.
+# tag will run the supplied tag. env starts the image in the supplied environment and port will use that port
+# to listen on
 run () {
+  # use default values unless supplied
   tag="latest"
   if [ -n "$1" ]; then
     tag=$1
@@ -52,17 +55,21 @@ run () {
   if [ -n "$3" ]; then
     port=$3
   fi
+  # write env variables
   sudo printf "TAG=${tag}\nENV=${env}\nPORT=${port}\nDIR=${DIR}\n" | sudo tee /etc/.unlichtconf > /dev/null
+  # if container is running stop it
   container=$( sudo docker ps -q --filter ancestor=${BINARY_NAME} )
   if [ -n "$container" ]; then
     sudo docker stop $container > /dev/null
   fi
+  # start the container as a service
   sudo systemctl start $BINARY_NAME
   exit 0
 }
 
+# delete stops the container from running and then deletes the supplied image
 delete () {
-  container=$( sudo docker ps -q --filter ancestor=${BINARY_NAME} )
+  container=$( sudo docker ps -q --filter ancestor=${BINARY_NAME}:$1 )
   if [ -n "$container" ]; then
     sudo docker stop $container > /dev/null
   fi
@@ -72,10 +79,12 @@ delete () {
   exit 0
 }
 
+# clean is a weapper for docker system prune
 clean () {
   sudo docker system prune -f
 }
 
+# process command line
 if [ $# == 0 ]; then
   printf "No command supplied.\n" >&2
   usage

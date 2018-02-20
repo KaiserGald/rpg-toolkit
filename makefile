@@ -32,6 +32,7 @@ install:
 	@cp -u $(BINARY_NAME) $(INSTALLPATH)
 	$(DONE)
 
+# only create directories if they don't already exist
 ifeq ("$(wildcard $(WEBINSTALLDIR))", "")
 	@mkdir $(WEBINSTALLDIR)
 endif
