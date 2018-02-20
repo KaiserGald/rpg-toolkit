@@ -62,7 +62,12 @@ run () {
 }
 
 delete () {
+  container=$( sudo docker ps -q --filter ancestor=${BINARY_NAME} )
+  if [ -n "$container" ]; then
+    sudo docker stop $container > /dev/null
+  fi
   sudo docker image rm -f $BINARY_NAME:$1
+  printf "\n\n"
   sudo docker images
   exit 0
 }
