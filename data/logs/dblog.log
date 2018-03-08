@@ -79,3 +79,7 @@
 2018-03-08T17:38:10.338-0600 I CONTROL  [initandlisten] 
 2018-03-08T17:38:10.348-0600 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '/home/gald/goworkspace/src/github.com/KaiserGald/unlicht-server/./db/diagnostic.data'
 2018-03-08T17:38:10.349-0600 I NETWORK  [initandlisten] waiting for connections on port 27017
+2018-03-08T17:43:10.349-0600 I STORAGE  [thread1] createCollection: config.system.sessions with generated UUID: 185c4fc8-a68a-46c5-b264-cc1e65deb369
+2018-03-08T17:43:10.401-0600 I INDEX    [thread1] build index on: config.system.sessions properties: { v: 2, key: { lastUse: 1 }, name: "lsidTTLIndex", ns: "config.system.sessions", expireAfterSeconds: 1800 }
+2018-03-08T17:43:10.402-0600 I INDEX    [thread1] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+2018-03-08T17:43:10.402-0600 I INDEX    [thread1] build index done.  scanned 0 total records. 0 secs

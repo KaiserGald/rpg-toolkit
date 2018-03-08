@@ -25,6 +25,9 @@ if [[ $BINARY_NAME =~ $NOSPACE ]]; then
   exit 2
 fi
 
+#make db folder
+mkdir ${DIR}/db
+
 # write name of app to configuration file
 line="BINARY_NAME=${BINARY_NAME}"
 cat data/conf/default.cfg | awk -v str=$line '{ if (NR==2) print str; else print $0 }' > data/conf/app.cfg
