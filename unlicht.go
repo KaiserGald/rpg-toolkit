@@ -14,7 +14,6 @@ import (
 	"github.com/KaiserGald/unlicht-server/daemon"
 )
 
-var dev bool
 var port int
 var verbose bool
 var quiet bool
@@ -34,8 +33,6 @@ func processCLI() *daemon.Config {
 }
 
 func processFlags(cfg *daemon.Config) {
-	flag.BoolVar(&dev, "dev", false, "sets server to dev mode")
-	flag.BoolVar(&dev, "d", false, "sets server to dev mode")
 
 	flag.BoolVar(&color, "color", false, "Colors the server output.")
 	flag.BoolVar(&color, "c", false, "Colors the server output.")
@@ -54,6 +51,11 @@ func processFlags(cfg *daemon.Config) {
 }
 
 func configureDaemon(cfg *daemon.Config) {
+
+	if verbose && quiet {
+		log.Notice.Log("Can't start server in both verbose and quiet mode. Only use one. Defaulting to normal output mode...")
+	}
+
 	env := os.Getenv("RUN_ENV")
 	log.SetLogLevel(logger.All)
 	log.Debug.Log(env)
@@ -69,12 +71,12 @@ func configureDaemon(cfg *daemon.Config) {
 		log.Debug.Log("Started in production mode.")
 	}
 
-	if verbose {
+	if verbose && !quiet {
 		log.SetLogLevel(logger.Verbose)
 		log.Debug.Log("Started in verbose mode.")
 	}
 
-	if quiet {
+	if quiet && !verbose {
 		log.SetLogLevel(logger.ErrorsOnly)
 		log.Debug.Log("Started in quiet mode.")
 	}
