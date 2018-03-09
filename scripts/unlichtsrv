@@ -63,7 +63,7 @@ run () {
     sudo docker stop $container > /dev/null
   fi
   # start the database
-  mongod --dbpath="./db" --fork --logpath="data/logs/dblog.log" --logappend
+  mongod --dbpath="./db" --logpath="data/logs/dblog.log" --logappend
   # start the container as a service
   sudo systemctl start $BINARY_NAME
   exit 0

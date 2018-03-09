@@ -26,7 +26,8 @@ if [[ $BINARY_NAME =~ $NOSPACE ]]; then
 fi
 
 #make db folder
-mkdir ${DIR}/db
+mkdir -p ${DIR}/db
+mkdir -p ${DIR}/data/logs
 
 # write name of app to configuration file
 line="BINARY_NAME=${BINARY_NAME}"
