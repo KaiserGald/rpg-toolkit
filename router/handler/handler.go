@@ -12,7 +12,8 @@ import (
 
 	"github.com/KaiserGald/logger"
 	"github.com/KaiserGald/unlicht-server/router/handler/handle"
-	"github.com/KaiserGald/unlicht-server/router/handler/handlers"
+	"github.com/KaiserGald/unlicht-server/router/handler/handlers/index"
+	"github.com/KaiserGald/unlicht-server/router/handler/handlers/testpage"
 )
 
 var (
@@ -26,6 +27,12 @@ func Start(lg *logger.Logger) error {
 	log.Debug.Log("Starting route handler.")
 	index.Route().Init(log)
 	err := Add(index.Route())
+	if err != nil {
+		return err
+	}
+
+	testpage.Route().Init(log)
+	err = Add(testpage.Route())
 	if err != nil {
 		return err
 	}
